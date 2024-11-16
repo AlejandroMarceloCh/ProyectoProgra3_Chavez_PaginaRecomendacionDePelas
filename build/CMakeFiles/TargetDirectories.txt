@@ -1,0 +1,3 @@
+/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles/ProyectoProgra3.dir
+/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles/edit_cache.dir
+/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles/rebuild_cache.dir

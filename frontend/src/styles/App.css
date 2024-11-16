@@ -1,0 +1,13 @@
+/* App.css */
+
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000; /* Opcional, si quieres un fondo negro mientras carga la imagen */
+    overflow: hidden; /* Evita que haya scroll */
+}

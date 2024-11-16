@@ -1,0 +1,59 @@
+/* src/styles/SearchPage.css */
+
+.search-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    min-height: 100vh; /* Asegura que el fondo ocupe toda la altura */
+    background-image: url('../styles/Fondo1.jpg'); /* Ruta a tu imagen */
+    background-size: cover; /* Ajusta la imagen para que cubra todo el fondo */
+    background-position: center; /* Centra la imagen de fondo */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+}
+
+.logout-button {
+    background-color: #6a4c93;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.content-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo semitransparente para mayor legibilidad */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.search-container {
+    flex: 3;
+    margin-right: 20px;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.error-message {
+    color: #f00;
+}
+
+.movie-list {
+    margin-top: 20px;
+}
+
+.sidebar {
+    flex: 1;
+}

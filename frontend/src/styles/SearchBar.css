@@ -1,0 +1,45 @@
+/* SearchBar.css */
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.search-bar input {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    width: 250px;
+    background-color: #4d4d4d; /* Fondo gris claro */
+    color: #ffffff; /* Texto blanco */
+    transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.search-bar input::placeholder {
+    color: #cccccc; /* Color claro para el texto de placeholder */
+}
+
+.search-bar input:focus {
+    background-color: #5c5c5c; /* Fondo un poco más claro en focus */
+    border: 1px solid #6a0dad; /* Borde púrpura */
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #6a0dad; /* Fondo púrpura */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-bar button:hover {
+    background-color: #8a2be2; /* Color púrpura más claro en hover */
+    transform: scale(1.05); /* Efecto de agrandamiento en hover */
+}
