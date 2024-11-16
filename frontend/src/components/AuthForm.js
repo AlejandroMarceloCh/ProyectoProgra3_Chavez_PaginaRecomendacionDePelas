@@ -12,7 +12,8 @@ function AuthForm({ onLogin }) {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5050/login', {
+            // Cambiar a una URL relativa para aprovechar el proxy
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -23,9 +24,11 @@ function AuthForm({ onLogin }) {
                 onLogin(token);
                 navigate('/search');
             } else {
-                setError('Credenciales incorrectas');
+                const errorData = await response.json();
+                setError(errorData.message || 'Credenciales incorrectas');
             }
         } catch (error) {
+            console.error("Error de conexión:", error);
             setError('Error de conexión');
         }
     };

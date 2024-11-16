@@ -1,3 +1,4 @@
+//server.cpp
 #include "movie_database.h"
 #include "authentication.h"
 #include "recommendation_system.h"
@@ -23,7 +24,6 @@ void signal_handler(int signal) {
         server_ptr->stop();
     }
 }
-
 // Configuración de CORS
 void set_cors_headers(httplib::Response& res) {
     res.set_header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -32,14 +32,58 @@ void set_cors_headers(httplib::Response& res) {
     res.set_header("Access-Control-Allow-Credentials", "true");
 }
 
+
 void cors_middleware(const httplib::Request& req, httplib::Response& res, std::function<void()> next) {
+    // Manejo específico para solicitudes OPTIONS (preflight)
     if (req.method == "OPTIONS") {
         set_cors_headers(res);
-        res.status = 204;
+        res.status = 204; // Responder con No Content para preflight
         return;
     }
+
+    // Para todas las demás solicitudes
+    set_cors_headers(res);
     next();
 }
+// Función para manejar /search
+void handleSearch(const httplib::Request& req, httplib::Response& res) {
+    try {
+        std::cout << "[DEBUG] Endpoint /search invocado." << std::endl;
+
+        // Obtener usuario actual desde la sesión
+        SessionUser& currentUser = getUserFromSession(req);
+
+        // Crear SearchEngine usando el User de currentUser
+        SearchEngine searchEngine(currentUser.getUser());
+
+        // Parsear la solicitud
+        auto json_data = json::parse(req.body);
+        std::string query = json_data["query"];
+        int page = json_data.value("page", 0);
+
+        // Actualizar historial de búsqueda y buscar películas
+        currentUser.getUser().addToSearchHistory(query);
+        auto results = searchEngine.search(query, page);
+
+        // Preparar respuesta
+        json moviesJson = json::array();
+        for (const auto& movie : results) {
+            moviesJson.push_back({
+                {"id", movie->getId()},
+                {"title", movie->getTitle()},
+                {"plot", movie->getPlot()},
+                {"importance_score", movie->getRelevanceScore()}
+            });
+        }
+
+        res.set_content(moviesJson.dump(), "application/json");
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] /search: " << e.what() << std::endl;
+        res.status = 500;
+        res.set_content("Error interno del servidor", "text/plain");
+    }
+}
+
 
 int main() {
     try {
@@ -62,6 +106,11 @@ int main() {
         server_ptr = std::make_unique<httplib::Server>();
         signal(SIGINT, signal_handler);
         signal(SIGTERM, signal_handler);
+
+        // Middleware para CORS
+        server_ptr->set_post_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+            set_cors_headers(res);
+        });
 
         // Endpoints
         server_ptr->Post("/login", [](const httplib::Request& req, httplib::Response& res) {
@@ -86,50 +135,23 @@ int main() {
             }
         });
 
-        server_ptr->Get("/profiles", [](const httplib::Request& req, httplib::Response& res) {
+        server_ptr->Post("/search", [](const httplib::Request& req, httplib::Response& res) {
             try {
-                std::cout << "[DEBUG] Endpoint /profiles invocado." << std::endl;
-                handleGetProfiles(req, res);
+                std::cout << "[DEBUG] Endpoint /search invocado." << std::endl;
+                handleSearchMovies(req, res);
             } catch (const std::exception& e) {
-                std::cerr << "[ERROR] Excepción en /profiles: " << e.what() << std::endl;
+                std::cerr << "[ERROR] /search: " << e.what() << std::endl;
                 res.status = 500;
                 res.set_content("Error interno del servidor", "text/plain");
             }
         });
 
-        server_ptr->Post("/search", [](const httplib::Request& req, httplib::Response& res) {
+        server_ptr->Get("/recommendations", [](const httplib::Request& req, httplib::Response& res) {
             try {
-                std::cout << "[DEBUG] Endpoint /search invocado." << std::endl;
-
-                // Obtener usuario actual desde la sesión
-                SessionUser& currentUser = getUserFromSession(req);
-
-                // Crear SearchEngine usando el User de currentUser
-                SearchEngine searchEngine(currentUser.getUser());
-
-                // Parsear la solicitud
-                auto json_data = json::parse(req.body);
-                std::string query = json_data["query"];
-                int page = json_data.value("page", 0);
-
-                // Actualizar historial de búsqueda y buscar películas
-                currentUser.getUser().addToSearchHistory(query);
-                auto results = searchEngine.search(query, page);
-
-                // Preparar respuesta
-                json moviesJson = json::array();
-                for (const auto& movie : results) {
-                    moviesJson.push_back({
-                        {"id", movie->getId()},
-                        {"title", movie->getTitle()},
-                        {"plot", movie->getPlot()},
-                        {"importance_score", movie->getRelevanceScore()}
-                    });
-                }
-
-                res.set_content(moviesJson.dump(), "application/json");
+                std::cout << "[DEBUG] Endpoint /recommendations invocado." << std::endl;
+                handleGetRecommendations(req, res);
             } catch (const std::exception& e) {
-                std::cerr << "[ERROR] /search: " << e.what() << std::endl;
+                std::cerr << "[ERROR] /recommendations: " << e.what() << std::endl;
                 res.status = 500;
                 res.set_content("Error interno del servidor", "text/plain");
             }
@@ -152,33 +174,6 @@ int main() {
                 handleWatchLaterMovie(req, res);
             } catch (const std::exception& e) {
                 std::cerr << "[ERROR] /watchlater: " << e.what() << std::endl;
-                res.status = 500;
-                res.set_content("Error interno del servidor", "text/plain");
-            }
-        });
-
-        server_ptr->Get("/recommendations", [](const httplib::Request& req, httplib::Response& res) {
-            try {
-                std::cout << "[DEBUG] Endpoint /recommendations invocado." << std::endl;
-
-                // Obtener usuario actual desde la sesión
-                SessionUser& currentUser = getUserFromSession(req);
-
-                // Crear el sistema de recomendaciones usando el User interno
-                RecommendationSystem recommendationSystem(currentUser.getUser());
-
-                // Generar recomendaciones
-                auto recommendations = recommendationSystem.getEnhancedRecommendations();
-
-                // Preparar respuesta JSON
-                json recommendationsJson = json::array();
-                for (const auto& title : recommendations) {
-                    recommendationsJson.push_back({{"title", title}});
-                }
-
-                res.set_content(recommendationsJson.dump(), "application/json");
-            } catch (const std::exception& e) {
-                std::cerr << "[ERROR] /recommendations: " << e.what() << std::endl;
                 res.status = 500;
                 res.set_content("Error interno del servidor", "text/plain");
             }
