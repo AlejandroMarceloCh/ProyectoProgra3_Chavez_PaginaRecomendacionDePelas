@@ -82,7 +82,7 @@ El proyecto utiliza programación paralela para optimizar la carga y procesamien
 ![Vista de Inicio](./frontend/src/styles/login.png)
 
 ### Vista de Búsqueda y Recomendaciones
-![Vista de Búsqueda](./frontend/src/styles/Movie.png)
+![Vista de Búsqueda](./frontend/src/styles/Holo.png)
 
 ---
 
