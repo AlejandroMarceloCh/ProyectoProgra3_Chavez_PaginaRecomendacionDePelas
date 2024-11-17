@@ -17,12 +17,16 @@
 using json = nlohmann::json;
 using namespace httplib;
 
-// Declaraciones de funciones para los endpoints
+//User& getUserFromSession();
 void handleLogin(const httplib::Request& req, httplib::Response& res);
 void handleRegister(const httplib::Request& req, httplib::Response& res);
 void handleSearchMovies(const httplib::Request& req, httplib::Response& res);
 void handleGetRecommendations(const httplib::Request& req, httplib::Response& res);
 void handleGetWatchLater(const httplib::Request& req, httplib::Response& res);
+void handleLikeMovie(const httplib::Request& req, httplib::Response& res);
+void handleWatchLaterMovie(const httplib::Request& req, httplib::Response& res);
 
 #endif // ENDPOINTS_H
+
+
 

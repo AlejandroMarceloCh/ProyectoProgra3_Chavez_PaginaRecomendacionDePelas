@@ -1,3 +1,4 @@
+//server.cpp
 #include "movie_database.h"
 #include "authentication.h"
 #include "endpoints.h"
@@ -57,6 +58,9 @@ int main() {
         server_ptr->Post("/search", handleSearchMovies);
         server_ptr->Get("/recommendations", handleGetRecommendations);
         server_ptr->Get("/watchlater", handleGetWatchLater);
+        server_ptr->Post("/likeMovie", handleLikeMovie);
+        server_ptr->Post("/watchLaterMovie", handleWatchLaterMovie);
+
 
         std::cout << "[DEBUG] Iniciando servidor en http://127.0.0.1:5050..." << std::endl;
         if (!server_ptr->listen("127.0.0.1", 5050)) {

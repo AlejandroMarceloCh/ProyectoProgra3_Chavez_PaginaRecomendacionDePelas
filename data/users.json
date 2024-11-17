@@ -86,7 +86,25 @@
             "yellow",
             "green",
             "heal",
-            "heal"
+            "heal",
+            "Azul",
+            "Azul",
+            "Azul",
+            "blue",
+            "green",
+            "train",
+            "movie",
+            "movie",
+            "",
+            "visual",
+            "visual",
+            "visual",
+            "visual",
+            "way",
+            "Later",
+            "Later",
+            "Inception",
+            "Batman"
         ],
         "watch_later": [
             "tt0110116",
@@ -131,15 +149,23 @@
             "tt0329767"
         ]
     },
-    "testuser": {
+    "newuser": {
         "liked_movies": [],
+        "password": "newpassword",
+        "search_history": [],
+        "watch_later": []
+    },
+    "testuser": {
+        "liked_movies": [
+            "tt1137999"
+        ],
         "password": "testpass",
         "search_history": [
-            "action movies",
-            "murder",
-            "green",
-            "moon"
+            "sky",
+            "Later"
         ],
-        "watch_later": []
+        "watch_later": [
+            "tt1137999"
+        ]
     }
 }

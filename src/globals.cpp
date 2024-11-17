@@ -1,3 +1,4 @@
+//globals.cpp
 #include "globals.h"
 
 MovieDatabase& database = MovieDatabase::getInstance();

@@ -33,26 +33,6 @@ export const getRecommendations = async () => {
   }
 };
 
-// Marcar película como "me gusta"
-export const likeMovie = async (movieId) => {
-  try {
-    await apiClient.post('/like', { movieId });
-  } catch (error) {
-    console.error("Error al marcar película como 'Me gusta':", error.response?.data || error.message);
-    throw error;
-  }
-};
-
-// Agregar película a "ver más tarde"
-export const watchLaterMovie = async (movieId) => {
-  try {
-    await apiClient.post('/watchlater', { movieId });
-  } catch (error) {
-    console.error("Error al agregar película a 'Ver más tarde':", error.response?.data || error.message);
-    throw error;
-  }
-};
-
 // Obtener lista de películas para "ver más tarde"
 export const getWatchLater = async () => {
   try {
@@ -63,3 +43,30 @@ export const getWatchLater = async () => {
     throw error;
   }
 };
+
+
+export async function likeMovie(movieId) {
+    const response = await fetch(`${API_URL}/likeMovie`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ movieId }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al marcar como "Me gusta"');
+    }
+    return await response.json();
+}
+
+export async function watchLaterMovie(movieId) {
+    const response = await fetch(`${API_URL}/watchLaterMovie`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ movieId }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al agregar a "Ver más tarde"');
+    }
+    return await response.json();
+}

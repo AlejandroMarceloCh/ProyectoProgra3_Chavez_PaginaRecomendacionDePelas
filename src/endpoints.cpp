@@ -1,3 +1,4 @@
+//endpoints.cpp
 #include "endpoints.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
@@ -94,22 +95,26 @@ void handleSearchMovies(const httplib::Request& req, httplib::Response& res) {
 // Endpoint para obtener recomendaciones
 void handleGetRecommendations(const httplib::Request& req, httplib::Response& res) {
     try {
+        // Obtener el usuario autenticado
         User& currentUser = getUserFromSession();
+        // Crear el sistema de recomendaciones basado en el usuario
         RecommendationSystem recommendationSystem(currentUser);
-
+        // Obtener las recomendaciones
         auto recommendations = recommendationSystem.getEnhancedRecommendations();
+        // Formatear las recomendaciones como JSON
         json recommendationsJson = json::array();
         for (const auto& title : recommendations) {
             recommendationsJson.push_back({{"title", title}});
         }
-
+        // Responder al cliente con las recomendaciones
         res.set_content(recommendationsJson.dump(), "application/json");
     } catch (const std::exception& e) {
         std::cerr << "[ERROR] handleGetRecommendations: " << e.what() << std::endl;
-        res.status = 401;
+        res.status = 401; // Responder con 401 si no hay usuario autenticado
         res.set_content(R"({"error": "Usuario no autenticado"})", "application/json");
     }
 }
+
 
 void handleGetWatchLater(const httplib::Request& req, httplib::Response& res) {
     try {
@@ -143,5 +148,71 @@ void handleGetWatchLater(const httplib::Request& req, httplib::Response& res) {
         std::cerr << "[ERROR] handleGetWatchLater: " << e.what() << std::endl;
         res.status = 401; // Responder con 401 si no hay usuario autenticado
         res.set_content(R"({"error": "Usuario no autenticado"})", "application/json");
+    }
+}
+
+
+// endpoints.cpp
+
+void handleLikeMovie(const httplib::Request& req, httplib::Response& res) {
+    try {
+        // Obtener el usuario autenticado
+        User& currentUser = getUserFromSession();
+
+        // Parsear los datos de la película desde la solicitud
+        auto json_data = json::parse(req.body);
+        std::string movieId = json_data["movieId"];
+
+        // Buscar la película en la base de datos
+        auto movie = database.getMovieById(movieId);
+        if (!movie) {
+            res.status = 404;
+            res.set_content(R"({"error": "Película no encontrada"})", "application/json");
+            return;
+        }
+
+        // Agregar a favoritos
+        currentUser.likeMovie(movie);
+
+        // Guardar los cambios en el archivo JSON
+        auth.saveUserData(currentUser);
+
+        res.set_content(R"({"message": "Película marcada como 'Me gusta'"})", "application/json");
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] handleLikeMovie: " << e.what() << std::endl;
+        res.status = 500;
+        res.set_content(R"({"error": "Error interno del servidor"})", "application/json");
+    }
+}
+
+
+void handleWatchLaterMovie(const httplib::Request& req, httplib::Response& res) {
+    try {
+        // Obtener el usuario autenticado
+        User& currentUser = getUserFromSession();
+
+        // Parsear los datos de la película desde la solicitud
+        auto json_data = json::parse(req.body);
+        std::string movieId = json_data["movieId"];
+
+        // Buscar la película en la base de datos
+        auto movie = database.getMovieById(movieId);
+        if (!movie) {
+            res.status = 404;
+            res.set_content(R"({"error": "Película no encontrada"})", "application/json");
+            return;
+        }
+
+        // Agregar a la lista "Ver más tarde"
+        currentUser.addToWatchLater(movie);
+
+        // Guardar los cambios en el archivo JSON
+        auth.saveUserData(currentUser);
+
+        res.set_content(R"({"message": "Película añadida a 'Ver más tarde'"})", "application/json");
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] handleWatchLaterMovie: " << e.what() << std::endl;
+        res.status = 500;
+        res.set_content(R"({"error": "Error interno del servidor"})", "application/json");
     }
 }

@@ -10,9 +10,9 @@ const Sidebar = () => {
 
     useEffect(() => {
         if (activeTab === 'recommendations') {
-            getRecommendations().then(setRecommendations);
-        } else {
-            getWatchLater().then(setWatchLater);
+            getRecommendations().then(setRecommendations).catch(() => setRecommendations([]));
+        } else if (activeTab === 'watchLater') {
+            getWatchLater().then(setWatchLater).catch(() => setWatchLater([]));
         }
     }, [activeTab]);
 
@@ -23,14 +23,14 @@ const Sidebar = () => {
     return (
         <div className="sidebar">
             <div className="sidebar-tabs">
-                <button 
-                    onClick={() => handleTabClick('recommendations')} 
+                <button
+                    onClick={() => handleTabClick('recommendations')}
                     className={activeTab === 'recommendations' ? 'active' : ''}
                 >
                     Ver Películas Recomendadas
                 </button>
-                <button 
-                    onClick={() => handleTabClick('watchLater')} 
+                <button
+                    onClick={() => handleTabClick('watchLater')}
                     className={activeTab === 'watchLater' ? 'active' : ''}
                 >
                     Ver Más Tarde
@@ -38,21 +38,29 @@ const Sidebar = () => {
             </div>
             <div className="sidebar-content">
                 {activeTab === 'recommendations' ? (
-                    <ul>
-                        {recommendations.map(movie => (
-                            <li key={movie.id}>
-                                <span className="movie-title">{movie.title}</span>
-                            </li>
-                        ))}
-                    </ul>
+                    recommendations.length > 0 ? (
+                        <ul>
+                            {recommendations.map((movie) => (
+                                <li key={movie.id}>
+                                    <span className="movie-title">{movie.title}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay películas recomendadas disponibles.</p>
+                    )
                 ) : (
-                    <ul>
-                        {watchLater.map(movie => (
-                            <li key={movie.id}>
-                                <span className="movie-title">{movie.title}</span>
-                            </li>
-                        ))}
-                    </ul>
+                    watchLater.length > 0 ? (
+                        <ul>
+                            {watchLater.map((movie) => (
+                                <li key={movie.id}>
+                                    <span className="movie-title">{movie.title}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay películas en la lista de "Ver Más Tarde".</p>
+                    )
                 )}
             </div>
         </div>
