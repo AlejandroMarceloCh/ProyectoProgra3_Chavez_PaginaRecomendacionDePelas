@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5050';
+const API_BASE_URL = 'http://localhost:5050'; // URL base para el backend
 
 // Instancia de Axios para manejar solicitudes con cookies
 const apiClient = axios.create({
@@ -44,29 +44,24 @@ export const getWatchLater = async () => {
   }
 };
 
+// Marcar película como "Me gusta"
+export const likeMovie = async (movieId) => {
+  try {
+    const response = await apiClient.post('/likeMovie', { movieId });
+    return response.data;
+  } catch (error) {
+    console.error('Error al marcar como "Me gusta":', error.response?.data || error.message);
+    throw error;
+  }
+};
 
-export async function likeMovie(movieId) {
-    const response = await fetch(`${API_URL}/likeMovie`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ movieId }),
-    });
-
-    if (!response.ok) {
-        throw new Error('Error al marcar como "Me gusta"');
-    }
-    return await response.json();
-}
-
-export async function watchLaterMovie(movieId) {
-    const response = await fetch(`${API_URL}/watchLaterMovie`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ movieId }),
-    });
-
-    if (!response.ok) {
-        throw new Error('Error al agregar a "Ver más tarde"');
-    }
-    return await response.json();
-}
+// Agregar película a "Ver más tarde"
+export const watchLaterMovie = async (movieId) => {
+  try {
+    const response = await apiClient.post('/watchLaterMovie', { movieId });
+    return response.data;
+  } catch (error) {
+    console.error('Error al agregar a "Ver más tarde":', error.response?.data || error.message);
+    throw error;
+  }
+};
