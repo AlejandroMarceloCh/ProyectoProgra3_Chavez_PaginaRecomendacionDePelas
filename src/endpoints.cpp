@@ -1,3 +1,4 @@
+//endpoints.cpp
 #include "endpoints.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
@@ -66,21 +67,29 @@ void handleRegister(const httplib::Request& req, httplib::Response& res) {
     }
 }
 
-// Endpoint para buscar películas
 void handleSearchMovies(const httplib::Request& req, httplib::Response& res) {
     try {
         auto json_data = json::parse(req.body);
-        std::string query = json_data["query"];
-        int page = json_data.value("page", 0);
-        std::string username = json_data["username"];
 
-        User& currentUser = *(sessions[username]);
+        // Validar campos requeridos
+        if (!json_data.contains("query") || json_data["query"].is_null() ||
+            !json_data.contains("username") || json_data["username"].is_null()) {
+            res.status = 400;
+            res.set_content(R"({"error": "Campos requeridos faltantes"})", "application/json");
+            return;
+        }
+
+        std::string query = json_data["query"];
+        std::string username = json_data["username"];
+        int page = json_data.value("page", 0);
+
+        User& currentUser = getUserFromSession(username);
         currentUser.addToSearchHistory(query);
 
         SearchEngine searchEngine(currentUser);
         auto results = searchEngine.search(query, page);
-        json moviesJson = json::array();
 
+        json moviesJson = json::array();
         for (const auto& movie : results) {
             moviesJson.push_back({
                 {"id", movie->getId()},
@@ -97,6 +106,7 @@ void handleSearchMovies(const httplib::Request& req, httplib::Response& res) {
         res.set_content(R"({"error": "Error interno del servidor"})", "application/json");
     }
 }
+
 
 // Endpoint para obtener recomendaciones
 void handleGetRecommendations(const httplib::Request& req, httplib::Response& res) {

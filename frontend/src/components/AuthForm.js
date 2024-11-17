@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../api/auth'; // Cambiado para usar `login` de la API
 import '../styles/AuthForm.css';
 
 function AuthForm({ onLogin }) {
@@ -11,24 +12,12 @@ function AuthForm({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5050/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        setError(errorResponse.error || 'Error de autenticación');
-        return;
-      }
-
-      // Guardar el username localmente para solicitudes posteriores
+      const response = await login(username, password);
       localStorage.setItem('username', username);
       onLogin(username);
       navigate('/search');
     } catch (error) {
-      setError('Error de conexión');
+      setError(error.message);
     }
   };
 

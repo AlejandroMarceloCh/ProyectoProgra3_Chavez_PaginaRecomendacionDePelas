@@ -39,12 +39,17 @@ int main() {
         signal(SIGINT, signal_handler);
         signal(SIGTERM, signal_handler);
 
-        // Middleware para agregar encabezados CORS globales
-        server_ptr->set_post_routing_handler([](const httplib::Request&, httplib::Response& res) {
-            set_cors_headers(res); // Agrega los encabezados CORS a todas las respuestas
+        // Middleware global para agregar encabezados CORS
+        server_ptr->set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+            set_cors_headers(res); // Agrega encabezados CORS a todas las respuestas
+            if (req.method == "OPTIONS") {
+                res.status = 204; // Respuesta para preflight requests
+                return httplib::Server::HandlerResponse::Handled;
+            }
+            return httplib::Server::HandlerResponse::Unhandled;
         });
 
-        // Manejar solicitudes preflight (OPTIONS) globalmente
+        // Manejar solicitudes preflight explícitamente (no es estrictamente necesario debido al middleware anterior)
         server_ptr->Options(".*", [](const httplib::Request&, httplib::Response& res) {
             set_cors_headers(res);
             res.status = 204; // No Content
@@ -59,7 +64,6 @@ int main() {
         server_ptr->Post("/likeMovie", handleLikeMovie);
         server_ptr->Post("/watchLaterMovie", handleWatchLaterMovie);
 
-        // Iniciar servidor
         std::cout << "[DEBUG] Iniciando servidor en http://127.0.0.1:5050..." << std::endl;
         if (!server_ptr->listen("127.0.0.1", 5050)) {
             std::cerr << "[ERROR] No se pudo iniciar el servidor en el puerto 5050." << std::endl;

@@ -1,15 +1,60 @@
 {
     "Alejandro": {
-        "liked_movies": [],
+        "liked_movies": [
+            "tt0244000",
+            "tt1407050",
+            "tt0306047",
+            "tt0362120",
+            "tt0120347",
+            "tt0890870",
+            "tt1132626"
+        ],
         "password": "Marcelo",
-        "search_history": [],
-        "watch_later": []
+        "search_history": [
+            "Inception",
+            "Moon",
+            "night",
+            "black",
+            "usa",
+            "america",
+            "american pie",
+            "scary movie",
+            "tomorrow",
+            "saw"
+        ],
+        "watch_later": [
+            "tt0825225",
+            "tt0376479",
+            "tt0252866",
+            "tt0163651",
+            "tt0306047",
+            "tt0362120",
+            "tt0024679",
+            "tt0140627",
+            "tt0890870",
+            "tt1132626"
+        ]
     },
     "Kalos": {
-        "liked_movies": [],
+        "liked_movies": [
+            "tt1126618",
+            "tt0042810"
+        ],
         "password": "Lazo",
-        "search_history": [],
-        "watch_later": []
+        "search_history": [
+            "Night",
+            "moorning",
+            "morning",
+            "sun"
+        ],
+        "watch_later": [
+            "tt2872718",
+            "tt0082817",
+            "tt1126618",
+            "tt0042810",
+            "tt0018455",
+            "tt0448134"
+        ]
     },
     "newuser": {
         "liked_movies": [],

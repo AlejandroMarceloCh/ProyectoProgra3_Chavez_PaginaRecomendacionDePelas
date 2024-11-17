@@ -14,6 +14,7 @@ const SearchPage = ({ onLogout }) => {
 
     const handleSearch = async () => {
         try {
+            console.log('Buscando películas con:', { query, username: localStorage.getItem('username') });
             const results = await searchMovies(query); // Llamada a la API para buscar películas
             setMovies(results); // Guarda los resultados de la búsqueda en el estado de películas
             setError(null); // Limpia cualquier error previo
@@ -22,6 +23,8 @@ const SearchPage = ({ onLogout }) => {
             setMovies([]); // Si hay un error, limpia los resultados de búsqueda
         }
     };
+    
+    
 
     return (
         <div className="search-page">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5050'; // URL base para el backend
+const API_BASE_URL = 'http://localhost:5050';
 
 // Instancia de Axios para manejar solicitudes con cookies
 const apiClient = axios.create({
@@ -22,15 +22,15 @@ const getUsername = () => {
 
 // Buscar películas por query
 export const searchMovies = async (query) => {
+  if (!query) {
+    throw new Error('La búsqueda no puede estar vacía');
+  }
+
   try {
+    const username = getUsername();
     const response = await apiClient.post(
       '/search',
-      { query },
-      {
-        headers: {
-          Username: getUsername(),
-        },
-      }
+      { query, username }, // Ahora enviamos `username` directamente en el cuerpo
     );
     return response.data;
   } catch (error) {
@@ -42,9 +42,10 @@ export const searchMovies = async (query) => {
 // Obtener recomendaciones
 export const getRecommendations = async () => {
   try {
+    const username = getUsername();
     const response = await apiClient.get('/recommendations', {
       headers: {
-        Username: getUsername(),
+        Username: username,
       },
     });
     return response.data;
@@ -57,9 +58,10 @@ export const getRecommendations = async () => {
 // Obtener lista de películas para "ver más tarde"
 export const getWatchLater = async () => {
   try {
+    const username = getUsername();
     const response = await apiClient.get('/watchlater', {
       headers: {
-        Username: getUsername(),
+        Username: username,
       },
     });
     return response.data;
@@ -72,12 +74,13 @@ export const getWatchLater = async () => {
 // Marcar película como "Me gusta"
 export const likeMovie = async (movieId) => {
   try {
+    const username = getUsername();
     const response = await apiClient.post(
       '/likeMovie',
       { movieId },
       {
         headers: {
-          Username: getUsername(),
+          Username: username,
         },
       }
     );
@@ -91,12 +94,13 @@ export const likeMovie = async (movieId) => {
 // Agregar película a "Ver más tarde"
 export const watchLaterMovie = async (movieId) => {
   try {
+    const username = getUsername();
     const response = await apiClient.post(
       '/watchLaterMovie',
       { movieId },
       {
         headers: {
-          Username: getUsername(),
+          Username: username,
         },
       }
     );

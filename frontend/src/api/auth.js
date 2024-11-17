@@ -13,6 +13,10 @@ const apiClient = axios.create({
 
 // Función para iniciar sesión
 export const login = async (username, password) => {
+  if (!username || !password) {
+    throw new Error('El usuario y la contraseña son obligatorios');
+  }
+
   try {
     const response = await apiClient.post('/login', { username, password });
     return response.data;
@@ -24,6 +28,10 @@ export const login = async (username, password) => {
 
 // Función para registrarse
 export const register = async (username, password) => {
+  if (!username || !password) {
+    throw new Error('El usuario y la contraseña son obligatorios');
+  }
+
   try {
     const response = await apiClient.post('/register', { username, password });
     return response.data;
