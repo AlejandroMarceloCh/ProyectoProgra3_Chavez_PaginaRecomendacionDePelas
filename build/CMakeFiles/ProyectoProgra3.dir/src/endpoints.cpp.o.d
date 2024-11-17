@@ -1068,7 +1068,8 @@ CMakeFiles/ProyectoProgra3.dir/src/endpoints.cpp.o: \
   /opt/homebrew/include/nlohmann/thirdparty/hedley/hedley_undef.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/queue \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/user.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/session_user.h \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/observer.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/recommendation_system.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/search_engine.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/globals.h
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/globals.h \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/recommendation_factory.h

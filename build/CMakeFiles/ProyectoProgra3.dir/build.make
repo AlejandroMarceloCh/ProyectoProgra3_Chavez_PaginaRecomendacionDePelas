@@ -181,10 +181,24 @@ CMakeFiles/ProyectoProgra3.dir/src/user.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ProyectoProgra3.dir/src/user.cpp.s"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/alejandromarcelo/Desktop/proyecto-streaming/src/user.cpp -o CMakeFiles/ProyectoProgra3.dir/src/user.cpp.s
 
+CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o: CMakeFiles/ProyectoProgra3.dir/flags.make
+CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o: /Users/alejandromarcelo/Desktop/proyecto-streaming/src/recommendation_factory.cpp
+CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o: CMakeFiles/ProyectoProgra3.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o -MF CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o.d -o CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o -c /Users/alejandromarcelo/Desktop/proyecto-streaming/src/recommendation_factory.cpp
+
+CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/alejandromarcelo/Desktop/proyecto-streaming/src/recommendation_factory.cpp > CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.i
+
+CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/alejandromarcelo/Desktop/proyecto-streaming/src/recommendation_factory.cpp -o CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.s
+
 CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o: CMakeFiles/ProyectoProgra3.dir/flags.make
 CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o: /Users/alejandromarcelo/Desktop/proyecto-streaming/src/authentication.cpp
 CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o: CMakeFiles/ProyectoProgra3.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o -MF CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o.d -o CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o -c /Users/alejandromarcelo/Desktop/proyecto-streaming/src/authentication.cpp
 
 CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.i: cmake_force
@@ -198,7 +212,7 @@ CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.s: cmake_force
 CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o: CMakeFiles/ProyectoProgra3.dir/flags.make
 CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o: /Users/alejandromarcelo/Desktop/proyecto-streaming/src/globals.cpp
 CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o: CMakeFiles/ProyectoProgra3.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o -MF CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o.d -o CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o -c /Users/alejandromarcelo/Desktop/proyecto-streaming/src/globals.cpp
 
 CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.i: cmake_force
@@ -219,6 +233,7 @@ ProyectoProgra3_OBJECTS = \
 "CMakeFiles/ProyectoProgra3.dir/src/search_engine.cpp.o" \
 "CMakeFiles/ProyectoProgra3.dir/src/trie.cpp.o" \
 "CMakeFiles/ProyectoProgra3.dir/src/user.cpp.o" \
+"CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o" \
 "CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o" \
 "CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o"
 
@@ -233,11 +248,12 @@ bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/recommendation_system.cp
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/search_engine.cpp.o
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/trie.cpp.o
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/user.cpp.o
+bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/build.make
 bin/ProyectoProgra3: CMakeFiles/ProyectoProgra3.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable bin/ProyectoProgra3"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/alejandromarcelo/Desktop/proyecto-streaming/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable bin/ProyectoProgra3"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ProyectoProgra3.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -847,6 +847,7 @@ CMakeFiles/ProyectoProgra3.dir/src/recommendation_system.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/cstdarg \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__memory/temp_value.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__split_buffer \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/observer.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/movie_database.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/movie.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/trie.h \

@@ -6,7 +6,6 @@
 #include <mutex>
 #include "movie_database.h"
 #include "user.h"
-#include "session_user.h"
 
 class Authentication {
 private:
@@ -25,8 +24,8 @@ public:
     // Verifica credenciales de usuario
     bool verifyCredentials(const std::string& username, const std::string& password) const;
     
-    // Carga los datos del usuario y los devuelve como SessionUser
-    SessionUser loadUserData(const std::string& username, const std::string& password);
+    // Carga los datos del usuario
+    std::unique_ptr<User> loadUserData(const std::string& username, const std::string& password);
 
     // Guarda los datos actualizados del usuario
     void saveUserData(const User& user);

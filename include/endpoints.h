@@ -7,7 +7,6 @@
 #include "recommendation_system.h"
 #include "search_engine.h"
 #include "user.h"
-#include "session_user.h"  // Incluir el archivo de SessionUser
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <unordered_map>
@@ -17,7 +16,7 @@
 using json = nlohmann::json;
 using namespace httplib;
 
-//User& getUserFromSession();
+User& getUserFromSession(const std::string& username);
 void handleLogin(const httplib::Request& req, httplib::Response& res);
 void handleRegister(const httplib::Request& req, httplib::Response& res);
 void handleSearchMovies(const httplib::Request& req, httplib::Response& res);

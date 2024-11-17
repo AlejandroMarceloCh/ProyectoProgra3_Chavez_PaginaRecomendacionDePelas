@@ -987,6 +987,6 @@ CMakeFiles/ProyectoProgra3.dir/src/authentication.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/deque \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/condition_variable \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/user.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/session_user.h \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/observer.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/iostream

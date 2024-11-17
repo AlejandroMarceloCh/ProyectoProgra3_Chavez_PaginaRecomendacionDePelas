@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ProyectoProgra3.dir/src/movie.cpp.o.d"
   "CMakeFiles/ProyectoProgra3.dir/src/movie_database.cpp.o"
   "CMakeFiles/ProyectoProgra3.dir/src/movie_database.cpp.o.d"
+  "CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o"
+  "CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o.d"
   "CMakeFiles/ProyectoProgra3.dir/src/recommendation_system.cpp.o"
   "CMakeFiles/ProyectoProgra3.dir/src/recommendation_system.cpp.o.d"
   "CMakeFiles/ProyectoProgra3.dir/src/search_engine.cpp.o"

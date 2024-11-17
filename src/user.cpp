@@ -18,22 +18,16 @@ User::User()
     std::cout << "[DEBUG] User: Constructor privado llamado." << std::endl;
 }
 
-
-
-
 // Mutex para sincronizar accesos al archivo JSON
 std::mutex userFileMutex;
 
-User& User::getInstance() {
-    static User instance;
-    return instance; // Instancia sin restricciones
-}
-
 void User::setUsername(const std::string& username) {
     this->username = username;
+    notifyObservers();
 }
 void User::setPassword(const std::string& password) {
     this->password = password;
+    notifyObservers();
 }
 
 std::string User::getUsername() const { return username; }
@@ -45,6 +39,7 @@ bool User::verifyPassword(const std::string& pass) const { return password == pa
 // Manejo de recomendaciones
 void User::setStoredRecommendations(const std::vector<std::string>& recommendations) {
     storedRecommendations = recommendations;
+    notifyObservers();
 }
 
 std::vector<std::string> User::getStoredRecommendations() const {
@@ -56,34 +51,60 @@ void User::addToWatchLater(std::shared_ptr<Movie> movie) {
     if (!hasWatchLater(movie->getId())) {
         watchLater.push_back(movie);
         std::cout << "[DEBUG] Película añadida a 'Ver más tarde': " << movie->getTitle() << std::endl;
+
+        // Notificar a los observadores
+        notifyObservers();
     }
 }
 
+
+
 void User::removeFromWatchLater(const std::string& movieId) {
+    auto initialSize = watchLater.size();
     watchLater.erase(std::remove_if(watchLater.begin(), watchLater.end(),
                                     [&movieId](const auto& movie) { return movie->getId() == movieId; }),
                      watchLater.end());
-    std::cout << "[DEBUG] Película eliminada de 'Ver más tarde': ID " << movieId << std::endl;
+
+    if (watchLater.size() != initialSize) { // Solo notificar si hubo un cambio
+        std::cout << "[DEBUG] Película eliminada de 'Ver más tarde': ID " << movieId << std::endl;
+
+        // Notificar a los observadores
+        notifyObservers();
+    }
 }
+
 
 void User::likeMovie(const std::shared_ptr<Movie>& movie) {
     if (!hasLiked(movie->getId())) {
         likedMovies.push_back(movie->getId());
         std::cout << "[DEBUG] Película añadida a favoritos: " << movie->getTitle() << std::endl;
+
+        // Notificar a los observadores
+        notifyObservers();
     }
 }
 
+
 void User::unlikeMovie(const std::string& movieId) {
+    auto initialSize = likedMovies.size();
     likedMovies.erase(std::remove_if(likedMovies.begin(), likedMovies.end(),
                                      [&movieId](const std::string& id) { return id == movieId; }),
                       likedMovies.end());
-    std::cout << "[DEBUG] Película eliminada de favoritos: ID " << movieId << std::endl;
+
+    if (likedMovies.size() != initialSize) { // Solo notificar si hubo un cambio
+        std::cout << "[DEBUG] Película eliminada de favoritos: ID " << movieId << std::endl;
+
+        // Notificar a los observadores
+        notifyObservers();
+    }
 }
+
 
 void User::setLikedMoviesIds(const std::vector<std::string>& likedIds) {
     validateMovieIds(likedIds);
     likedMovies = likedIds;
     std::cout << "[DEBUG] Lista de favoritos actualizada." << std::endl;
+    notifyObservers();
 }
 
 void User::setWatchLaterIds(const std::vector<std::string>& watchLaterIds) {
@@ -93,6 +114,7 @@ void User::setWatchLaterIds(const std::vector<std::string>& watchLaterIds) {
         watchLater.push_back(std::make_shared<Movie>(id, "", "", std::vector<std::string>{}));
     }
     std::cout << "[DEBUG] Lista de 'Ver más tarde' actualizada." << std::endl;
+    notifyObservers();
 }
 
 std::vector<std::string> User::getLikedMoviesIds() const { return likedMovies; }
@@ -110,6 +132,7 @@ std::vector<std::string> User::getWatchLaterIds() const {
 // Manejo del historial de búsqueda
 void User::addToSearchHistory(const std::string& query) {
     searchHistory.push_back(query);
+    notifyObservers(); // Notificar a los observadores
 
     // Sincronización con archivo JSON
     std::lock_guard<std::mutex> lock(userFileMutex);
@@ -140,11 +163,13 @@ const std::vector<std::string>& User::getSearchHistory() const { return searchHi
 
 bool User::hasLiked(const std::string& movieId) const {
     return std::find(likedMovies.begin(), likedMovies.end(), movieId) != likedMovies.end();
+    notifyObservers();
 }
 
 bool User::hasWatchLater(const std::string& movieId) const {
     return std::any_of(watchLater.begin(), watchLater.end(),
                        [&movieId](const auto& movie) { return movie->getId() == movieId; });
+    notifyObservers();
 }
 
 void User::setSearchHistory(const std::vector<std::string>& history) { searchHistory = history; }
@@ -159,3 +184,20 @@ void User::validateMovieIds(const std::vector<std::string>& ids) const {
     }
 }
 
+/*
+void User::addObserver(Observer* observer) {
+    observers.push_back(observer);
+    std::cout << "[DEBUG] Observador añadido. Total de observadores: " << observers.size() << std::endl;
+}
+
+void User::removeObserver(Observer* observer) {
+    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+
+void User::notifyObservers() {
+    for (auto& observer : observers) {
+        observer->update(); // Método definido en Observer
+    }
+}
+*/

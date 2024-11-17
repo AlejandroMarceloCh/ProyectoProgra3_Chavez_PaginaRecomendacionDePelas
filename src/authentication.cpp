@@ -6,7 +6,6 @@
 #include <nlohmann/json.hpp>
 #include "movie_database.h"
 #include "user.h"
-#include "session_user.h"
 
 using json = nlohmann::json;
 std::mutex Authentication::fileMutex;
@@ -37,9 +36,7 @@ void Authentication::loadUsers() {
     }
 }
 
-
-
-SessionUser Authentication::loadUserData(const std::string& username, const std::string& password) {
+std::unique_ptr<User> Authentication::loadUserData(const std::string& username, const std::string& password) {
     // Verificar credenciales
     if (!verifyCredentials(username, password)) {
         throw std::runtime_error("[ERROR] Credenciales incorrectas.");
@@ -56,19 +53,21 @@ SessionUser Authentication::loadUserData(const std::string& username, const std:
     if (it != usersJson.end()) {
         json userData = *it;
 
-        // Inicializar datos del usuario en el Singleton
-        User& user = User::getInstance();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setLikedMoviesIds(userData["liked_movies"].get<std::vector<std::string>>());
-        user.setWatchLaterIds(userData["watch_later"].get<std::vector<std::string>>());
-        user.setSearchHistory(userData["search_history"].get<std::vector<std::string>>());
+        // Crear y configurar el objeto User
+        auto user = std::make_unique<User>();
+        user->setUsername(username);
+        user->setPassword(password);
+        user->setLikedMoviesIds(userData["liked_movies"].get<std::vector<std::string>>());
+        user->setWatchLaterIds(userData["watch_later"].get<std::vector<std::string>>());
+        user->setSearchHistory(userData["search_history"].get<std::vector<std::string>>());
 
-        return SessionUser(user); // Retorna un SessionUser válido
+        return user; // Retorna un puntero único al objeto User
     }
 
     throw std::runtime_error("[ERROR] Usuario no encontrado.");
 }
+
+
 
 bool Authentication::registerUser(const std::string& username, const std::string& password) {
     if (users.find(username) != users.end()) {

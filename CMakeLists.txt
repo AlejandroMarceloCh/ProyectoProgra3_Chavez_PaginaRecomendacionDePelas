@@ -24,6 +24,7 @@ set(SOURCES
     src/search_engine.cpp
     src/trie.cpp
     src/user.cpp
+    src/recommendation_factory.cpp
     src/authentication.cpp
     src/globals.cpp
 )

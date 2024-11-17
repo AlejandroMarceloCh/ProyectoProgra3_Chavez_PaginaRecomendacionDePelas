@@ -1,20 +1,23 @@
-//endpoints.cpp
 #include "endpoints.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <stdexcept>
 #include "globals.h"
+#include "recommendation_factory.h"
 
 using json = nlohmann::json;
 
-// Obtener usuario autenticado usando Singleton
-User& getUserFromSession() {
-    User& user = User::getInstance();
-    if (user.getUsername().empty()) {
+User& getUserFromSession(const std::string& username) {
+    std::lock_guard<std::mutex> lock(sessionsMutex);
+
+    auto it = sessions.find(username);
+    if (it == sessions.end()) {
         throw std::runtime_error("[ERROR] Usuario no autenticado.");
     }
-    return user;
+
+    return *(it->second); // Desreferencia el unique_ptr para obtener el User
 }
+
 
 // Endpoint para iniciar sesión
 void handleLogin(const httplib::Request& req, httplib::Response& res) {
@@ -29,9 +32,11 @@ void handleLogin(const httplib::Request& req, httplib::Response& res) {
             return;
         }
 
-        User& user = User::getInstance();
-        user.setUsername(username);
-        user.setPassword(password);
+        auto user = auth.loadUserData(username, password);
+        {
+            std::lock_guard<std::mutex> lock(sessionsMutex);
+            sessions[username] = std::move(user); // Transfiere la propiedad al mapa de sesiones
+        }
 
         res.set_content(R"({"message": "Login exitoso"})", "application/json");
     } catch (const std::exception& e) {
@@ -67,8 +72,9 @@ void handleSearchMovies(const httplib::Request& req, httplib::Response& res) {
         auto json_data = json::parse(req.body);
         std::string query = json_data["query"];
         int page = json_data.value("page", 0);
+        std::string username = json_data["username"];
 
-        User& currentUser = getUserFromSession();
+        User& currentUser = *(sessions[username]);
         currentUser.addToSearchHistory(query);
 
         SearchEngine searchEngine(currentUser);
@@ -87,50 +93,46 @@ void handleSearchMovies(const httplib::Request& req, httplib::Response& res) {
         res.set_content(moviesJson.dump(), "application/json");
     } catch (const std::exception& e) {
         std::cerr << "[ERROR] handleSearchMovies: " << e.what() << std::endl;
-        res.status = 401;
-        res.set_content(R"({"error": "Usuario no autenticado"})", "application/json");
+        res.status = 500;
+        res.set_content(R"({"error": "Error interno del servidor"})", "application/json");
     }
 }
 
 // Endpoint para obtener recomendaciones
 void handleGetRecommendations(const httplib::Request& req, httplib::Response& res) {
     try {
-        // Obtener el usuario autenticado
-        User& currentUser = getUserFromSession();
-        // Crear el sistema de recomendaciones basado en el usuario
-        RecommendationSystem recommendationSystem(currentUser);
-        // Obtener las recomendaciones
-        auto recommendations = recommendationSystem.getEnhancedRecommendations();
-        // Formatear las recomendaciones como JSON
+        std::string username = req.get_header_value("Username");
+        User& currentUser = getUserFromSession(req.get_header_value("username"));
+
+
+        auto recommendationSystem = RecommendationFactory::create(currentUser);
+        auto recommendations = recommendationSystem->getEnhancedRecommendations();
+
         json recommendationsJson = json::array();
         for (const auto& title : recommendations) {
             recommendationsJson.push_back({{"title", title}});
         }
-        // Responder al cliente con las recomendaciones
+
         res.set_content(recommendationsJson.dump(), "application/json");
     } catch (const std::exception& e) {
         std::cerr << "[ERROR] handleGetRecommendations: " << e.what() << std::endl;
-        res.status = 401; // Responder con 401 si no hay usuario autenticado
+        res.status = 401;
         res.set_content(R"({"error": "Usuario no autenticado"})", "application/json");
     }
 }
 
-
+// Endpoint para obtener la lista "Ver más tarde"
 void handleGetWatchLater(const httplib::Request& req, httplib::Response& res) {
     try {
-        // Obtener el usuario autenticado
-        User& currentUser = getUserFromSession();
+        std::string username = req.get_header_value("Username");
+        User& currentUser = getUserFromSession(username);
 
-        // Obtener los IDs de las películas en "Ver más tarde"
         const auto& watchLaterList = currentUser.getWatchLaterIds();
 
-        // Crear un JSON para la respuesta
         json watchLaterJson = json::array();
         for (const auto& movieId : watchLaterList) {
-            // Buscar la película por su ID
             auto movie = database.getMovieById(movieId);
             if (movie) {
-                // Agregar los datos de la película al JSON
                 watchLaterJson.push_back({
                     {"id", movie->getId()},
                     {"title", movie->getTitle()},
@@ -142,28 +144,23 @@ void handleGetWatchLater(const httplib::Request& req, httplib::Response& res) {
             }
         }
 
-        // Enviar la respuesta al cliente
         res.set_content(watchLaterJson.dump(), "application/json");
     } catch (const std::exception& e) {
         std::cerr << "[ERROR] handleGetWatchLater: " << e.what() << std::endl;
-        res.status = 401; // Responder con 401 si no hay usuario autenticado
+        res.status = 401;
         res.set_content(R"({"error": "Usuario no autenticado"})", "application/json");
     }
 }
 
-
-// endpoints.cpp
-
+// Endpoint para marcar una película como "Me gusta"
 void handleLikeMovie(const httplib::Request& req, httplib::Response& res) {
     try {
-        // Obtener el usuario autenticado
-        User& currentUser = getUserFromSession();
+        std::string username = req.get_header_value("Username");
+        User& currentUser = getUserFromSession(username);
 
-        // Parsear los datos de la película desde la solicitud
         auto json_data = json::parse(req.body);
         std::string movieId = json_data["movieId"];
 
-        // Buscar la película en la base de datos
         auto movie = database.getMovieById(movieId);
         if (!movie) {
             res.status = 404;
@@ -171,10 +168,7 @@ void handleLikeMovie(const httplib::Request& req, httplib::Response& res) {
             return;
         }
 
-        // Agregar a favoritos
         currentUser.likeMovie(movie);
-
-        // Guardar los cambios en el archivo JSON
         auth.saveUserData(currentUser);
 
         res.set_content(R"({"message": "Película marcada como 'Me gusta'"})", "application/json");
@@ -185,17 +179,15 @@ void handleLikeMovie(const httplib::Request& req, httplib::Response& res) {
     }
 }
 
-
+// Endpoint para añadir una película a "Ver más tarde"
 void handleWatchLaterMovie(const httplib::Request& req, httplib::Response& res) {
     try {
-        // Obtener el usuario autenticado
-        User& currentUser = getUserFromSession();
+        std::string username = req.get_header_value("Username");
+        User& currentUser = getUserFromSession(username);
 
-        // Parsear los datos de la película desde la solicitud
         auto json_data = json::parse(req.body);
         std::string movieId = json_data["movieId"];
 
-        // Buscar la película en la base de datos
         auto movie = database.getMovieById(movieId);
         if (!movie) {
             res.status = 404;
@@ -203,10 +195,7 @@ void handleWatchLaterMovie(const httplib::Request& req, httplib::Response& res) 
             return;
         }
 
-        // Agregar a la lista "Ver más tarde"
         currentUser.addToWatchLater(movie);
-
-        // Guardar los cambios en el archivo JSON
         auth.saveUserData(currentUser);
 
         res.set_content(R"({"message": "Película añadida a 'Ver más tarde'"})", "application/json");

@@ -249,6 +249,30 @@ src/movie_database.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ProyectoProgra3.dir/build.make CMakeFiles/ProyectoProgra3.dir/src/movie_database.cpp.s
 .PHONY : src/movie_database.cpp.s
 
+src/recommendation_factory.o: src/recommendation_factory.cpp.o
+.PHONY : src/recommendation_factory.o
+
+# target to build an object file
+src/recommendation_factory.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ProyectoProgra3.dir/build.make CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.o
+.PHONY : src/recommendation_factory.cpp.o
+
+src/recommendation_factory.i: src/recommendation_factory.cpp.i
+.PHONY : src/recommendation_factory.i
+
+# target to preprocess a source file
+src/recommendation_factory.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ProyectoProgra3.dir/build.make CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.i
+.PHONY : src/recommendation_factory.cpp.i
+
+src/recommendation_factory.s: src/recommendation_factory.cpp.s
+.PHONY : src/recommendation_factory.s
+
+# target to generate assembly for a file
+src/recommendation_factory.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ProyectoProgra3.dir/build.make CMakeFiles/ProyectoProgra3.dir/src/recommendation_factory.cpp.s
+.PHONY : src/recommendation_factory.cpp.s
+
 src/recommendation_system.o: src/recommendation_system.cpp.o
 .PHONY : src/recommendation_system.o
 
@@ -393,6 +417,9 @@ help:
 	@echo "... src/movie_database.o"
 	@echo "... src/movie_database.i"
 	@echo "... src/movie_database.s"
+	@echo "... src/recommendation_factory.o"
+	@echo "... src/recommendation_factory.i"
+	@echo "... src/recommendation_factory.s"
 	@echo "... src/recommendation_system.o"
 	@echo "... src/recommendation_system.i"
 	@echo "... src/recommendation_system.s"

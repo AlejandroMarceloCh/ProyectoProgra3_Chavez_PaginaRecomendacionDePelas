@@ -1,4 +1,3 @@
-//server.cpp
 #include "movie_database.h"
 #include "authentication.h"
 #include "endpoints.h"
@@ -23,31 +22,30 @@ int main() {
     try {
         std::cout << "[DEBUG] Inicializando servidor..." << std::endl;
 
+        // Asegurar que los datos de películas están disponibles y cargar datos
         database.ensureJsonDataAvailable("../data/movies.csv", "../data/movies.json");
-
         if (!database.loadData("../data/movies.json")) {
             std::cerr << "[ERROR] No se pudo cargar los datos de películas." << std::endl;
             return 1;
         }
 
+        // Cargar usuarios
         auth.loadUsers();
 
+        // Crear el servidor
         server_ptr = std::make_unique<httplib::Server>();
+
+        // Manejo de señales
         signal(SIGINT, signal_handler);
         signal(SIGTERM, signal_handler);
 
-        // Middleware para agregar encabezados CORS
-        server_ptr->set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
-            set_cors_headers(res);
-            if (req.method == "OPTIONS") {
-                res.status = 204; // No Content
-                return httplib::Server::HandlerResponse::Handled;
-            }
-            return httplib::Server::HandlerResponse::Unhandled;
+        // Middleware para agregar encabezados CORS globales
+        server_ptr->set_post_routing_handler([](const httplib::Request&, httplib::Response& res) {
+            set_cors_headers(res); // Agrega los encabezados CORS a todas las respuestas
         });
 
-        // Manejo explícito de solicitudes OPTIONS para cada endpoint
-        server_ptr->Options("/.*", [](const httplib::Request&, httplib::Response& res) {
+        // Manejar solicitudes preflight (OPTIONS) globalmente
+        server_ptr->Options(".*", [](const httplib::Request&, httplib::Response& res) {
             set_cors_headers(res);
             res.status = 204; // No Content
         });
@@ -61,7 +59,7 @@ int main() {
         server_ptr->Post("/likeMovie", handleLikeMovie);
         server_ptr->Post("/watchLaterMovie", handleWatchLaterMovie);
 
-
+        // Iniciar servidor
         std::cout << "[DEBUG] Iniciando servidor en http://127.0.0.1:5050..." << std::endl;
         if (!server_ptr->listen("127.0.0.1", 5050)) {
             std::cerr << "[ERROR] No se pudo iniciar el servidor en el puerto 5050." << std::endl;

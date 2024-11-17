@@ -1,92 +1,15 @@
 {
     "Alejandro": {
-        "liked_movies": [
-            "tt0014972",
-            "tt0074937",
-            "tt0055205",
-            "tt0092675",
-            "tt4847546",
-            "tt0372784",
-            "tt0096895"
-        ],
+        "liked_movies": [],
         "password": "Marcelo",
-        "search_history": [
-            "tragedy",
-            "violence",
-            "murder",
-            "Blood",
-            "batman",
-            "joker",
-            "fenix"
-        ],
-        "watch_later": [
-            "tt0067229",
-            "tt0074937",
-            "tt0055205",
-            "tt0092675",
-            "tt3647498",
-            "tt0132888",
-            "tt0372784",
-            "tt0096895",
-            "tt0472219"
-        ]
+        "search_history": [],
+        "watch_later": []
     },
     "Kalos": {
-        "liked_movies": [
-            "tt0014972",
-            "tt0074937",
-            "tt0055205",
-            "tt0092675",
-            "tt4847546",
-            "tt0372784",
-            "tt0096895",
-            "tt0067803",
-            "tt0084737",
-            "tt0469979",
-            "tt1315981",
-            "tt0050379",
-            "tt0035970",
-            "tt1045670",
-            "tt1632708",
-            "tt0433383",
-            "tt0070239"
-        ],
+        "liked_movies": [],
         "password": "Lazo",
-        "search_history": [
-            "tragedy",
-            "violence",
-            "murder",
-            "Blood",
-            "batman",
-            "joker",
-            "fenix",
-            "Summer",
-            "Romantic",
-            "Happy",
-            "Family",
-            "friends",
-            "Good",
-            "god",
-            "jesus"
-        ],
-        "watch_later": [
-            "tt0067229",
-            "tt0074937",
-            "tt0055205",
-            "tt0092675",
-            "tt3647498",
-            "tt0132888",
-            "tt0372784",
-            "tt0096895",
-            "tt0472219",
-            "tt0067803",
-            "tt0084737",
-            "tt0469979",
-            "tt0366548",
-            "tt0116483",
-            "tt1632708",
-            "tt0020929"
-        ]
+        "search_history": [],
+        "watch_later": []
     },
     "newuser": {
         "liked_movies": [],

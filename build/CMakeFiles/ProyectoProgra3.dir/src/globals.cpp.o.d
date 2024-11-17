@@ -988,7 +988,7 @@ CMakeFiles/ProyectoProgra3.dir/src/globals.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/condition_variable \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/authentication.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/user.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/session_user.h \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/observer.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/httplib.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/arpa/inet.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/netinet/in.h \

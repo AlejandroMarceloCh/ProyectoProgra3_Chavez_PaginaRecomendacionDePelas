@@ -4,16 +4,19 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "observer.h"
 
 class Movie;
 
-class User {
+class User : public Subject {
 public:
-    static User& getInstance();  // Singleton
+    User(); // Constructor público
+
     void setUsername(const std::string& username);
     void setPassword(const std::string& password);
     std::string getUsername() const;
     std::string getPassword() const;
+
     bool verifyPassword(const std::string& pass) const;
     void setStoredRecommendations(const std::vector<std::string>& recommendations);
     std::vector<std::string> getStoredRecommendations() const;
@@ -36,9 +39,7 @@ public:
     bool hasLiked(const std::string& movieId) const;
     bool hasWatchLater(const std::string& movieId) const;
 
-
 private:
-    User(); // Constructor privado
     void validateMovieIds(const std::vector<std::string>& ids) const;
 
     std::string username;
