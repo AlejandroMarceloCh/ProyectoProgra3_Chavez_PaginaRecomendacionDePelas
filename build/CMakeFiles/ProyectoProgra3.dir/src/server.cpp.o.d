@@ -988,8 +988,6 @@ CMakeFiles/ProyectoProgra3.dir/src/server.cpp.o: \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/authentication.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/user.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/session_user.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/recommendation_system.h \
-  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/search_engine.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/endpoints.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/httplib.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/arpa/inet.h \
@@ -1071,4 +1069,6 @@ CMakeFiles/ProyectoProgra3.dir/src/server.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/set \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/sys/stat.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/unordered_set \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/recommendation_system.h \
+  /Users/alejandromarcelo/Desktop/proyecto-streaming/include/search_engine.h \
   /Users/alejandromarcelo/Desktop/proyecto-streaming/include/globals.h

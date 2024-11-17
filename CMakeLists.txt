@@ -25,9 +25,8 @@ set(SOURCES
     src/trie.cpp
     src/user.cpp
     src/authentication.cpp
-    src/globals.cpp # Asegúrate de incluir este archivo
+    src/globals.cpp
 )
-
 
 # Define el ejecutable
 add_executable(ProyectoProgra3 ${SOURCES})

@@ -1,3 +1,4 @@
+//movie_database.cpp
 #include "movie_database.h"
 #include <fstream>
 #include <iostream>
@@ -25,10 +26,20 @@ MovieDatabase& MovieDatabase::getInstance() {
     return instance;
 }
 
-// Función auxiliar para convertir una cadena a minúsculas
 std::string MovieDatabase::cleanString(const std::string& str) const {
     std::string result = str;
+
+    // Convertir a minúsculas
     std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+    // Eliminar comillas dobles y barras invertidas
+    result.erase(std::remove(result.begin(), result.end(), '\\'), result.end());
+    result.erase(std::remove(result.begin(), result.end(), '\"'), result.end());
+
+    // Eliminar espacios iniciales y finales
+    result.erase(0, result.find_first_not_of(" \t\n\r"));
+    result.erase(result.find_last_not_of(" \t\n\r") + 1);
+
     return result;
 }
 
@@ -86,6 +97,7 @@ void MovieDatabase::convertCsvToJson(const std::string& csvFilename, const std::
         std::getline(ss, plot, ',');
         std::getline(ss, tags, ',');
 
+        // Limpiar cada campo antes de guardarlo
         id = cleanString(id);
         title = cleanString(title);
         plot = cleanString(plot);
@@ -97,6 +109,7 @@ void MovieDatabase::convertCsvToJson(const std::string& csvFilename, const std::
             tagList.push_back(cleanString(tag));
         }
 
+        // Crear el objeto JSON limpio
         json movieJson = {
             {"id", id},
             {"title", title},
@@ -111,15 +124,18 @@ void MovieDatabase::convertCsvToJson(const std::string& csvFilename, const std::
     }
 
     csvFile.close();
+
+    // Guardar el JSON limpio
     std::ofstream jsonFile(jsonFilename);
     if (jsonFile.is_open()) {
-        jsonFile << jsonArray.dump(4);
+        jsonFile << jsonArray.dump(4); // Formato indentado para mayor claridad
         jsonFile.close();
         std::cout << "[DEBUG] Archivo JSON generado exitosamente: " << jsonFilename << std::endl;
     } else {
         std::cerr << "[ERROR] No se pudo abrir el archivo JSON para guardar los datos." << std::endl;
     }
 }
+
 
 bool MovieDatabase::loadData(const std::string& jsonPath) {
     std::ifstream file(jsonPath);
@@ -143,6 +159,13 @@ bool MovieDatabase::loadData(const std::string& jsonPath) {
 
         auto movie = std::make_shared<Movie>(id, title, plot, tags);
         movies[id] = movie;
+
+        // Inserta datos en los Tries para búsqueda
+        titleTrie->insert(title, movie);
+        plotTrie->insert(plot, movie);
+        for (const auto& tag : tags) {
+            tagTrie->insert(tag, movie);
+        }
     }
 
     std::cout << "[DEBUG] Total de películas cargadas: " << movies.size() << std::endl;
