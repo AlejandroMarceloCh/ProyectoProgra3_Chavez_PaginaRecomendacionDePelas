@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <regex>
 #include <algorithm>
+#include <thread>
 
 using json = nlohmann::json;
 
@@ -75,66 +76,96 @@ void MovieDatabase::workerThread() {
     }
 }
 
+
 void MovieDatabase::convertCsvToJson(const std::string& csvFilename, const std::string& jsonFilename) {
     std::ifstream csvFile(csvFilename);
-    json jsonArray = json::array();
-
     if (!csvFile.is_open()) {
         std::cerr << "[ERROR] No se pudo abrir el archivo CSV: " << csvFilename << std::endl;
         return;
     }
 
+    // Leer todas las líneas en memoria
+    std::vector<std::string> lines;
     std::string line;
-    std::getline(csvFile, line); // Leer y descartar la primera línea (cabecera)
-    int movieCount = 0;
-
+    std::getline(csvFile, line); // Leer y descartar la cabecera
     while (std::getline(csvFile, line)) {
-        std::stringstream ss(line);
-        std::string id, title, plot, tags;
-
-        std::getline(ss, id, ',');
-        std::getline(ss, title, ',');
-        std::getline(ss, plot, ',');
-        std::getline(ss, tags, ',');
-
-        // Limpiar cada campo antes de guardarlo
-        id = cleanString(id);
-        title = cleanString(title);
-        plot = cleanString(plot);
-
-        std::vector<std::string> tagList;
-        std::stringstream tagStream(tags);
-        std::string tag;
-        while (std::getline(tagStream, tag, '|')) {
-            tagList.push_back(cleanString(tag));
-        }
-
-        // Crear el objeto JSON limpio
-        json movieJson = {
-            {"id", id},
-            {"title", title},
-            {"plot", plot},
-            {"tags", tagList}
-        };
-
-        jsonArray.push_back(movieJson);
-        movieCount++;
-
-        std::cout << "[DEBUG] Película procesada (" << movieCount << "): " << title << " (" << id << ")" << std::endl;
+        lines.push_back(line);
     }
-
     csvFile.close();
 
-    // Guardar el JSON limpio
+    // Dividir las líneas en partes para cada hilo
+    int numThreads = std::thread::hardware_concurrency();
+    std::vector<std::vector<std::string>> threadChunks(numThreads);
+    for (size_t i = 0; i < lines.size(); ++i) {
+        threadChunks[i % numThreads].push_back(lines[i]);
+    }
+
+    // Vector compartido para almacenar resultados parciales
+    std::vector<json> partialResults(numThreads);
+    std::mutex resultsMutex;
+
+    // Crear hilos para procesar las partes
+    std::vector<std::thread> threads;
+    for (int t = 0; t < numThreads; ++t) {
+        threads.emplace_back([&, t]() {
+            for (const auto& line : threadChunks[t]) {
+                std::stringstream ss(line);
+                std::string id, title, plot, tags;
+
+                std::getline(ss, id, ',');
+                std::getline(ss, title, ',');
+                std::getline(ss, plot, ',');
+                std::getline(ss, tags, ',');
+
+                id = cleanString(id);
+                title = cleanString(title);
+                plot = cleanString(plot);
+
+                std::vector<std::string> tagList;
+                std::stringstream tagStream(tags);
+                std::string tag;
+                while (std::getline(tagStream, tag, '|')) {
+                    tagList.push_back(cleanString(tag));
+                }
+
+                json movieJson = {
+                    {"id", id},
+                    {"title", title},
+                    {"plot", plot},
+                    {"tags", tagList}
+                };
+
+                // Bloquear acceso al vector de resultados
+                std::lock_guard<std::mutex> lock(resultsMutex);
+                partialResults[t].push_back(movieJson);
+            }
+        });
+    }
+
+    // Esperar a que todos los hilos terminen
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    // Combinar resultados parciales en un único JSON
+    json jsonArray = json::array();
+    for (const auto& partial : partialResults) {
+        for (const auto& movie : partial) {
+            jsonArray.push_back(movie);
+        }
+    }
+
+    // Guardar el JSON en el archivo
     std::ofstream jsonFile(jsonFilename);
     if (jsonFile.is_open()) {
-        jsonFile << jsonArray.dump(4); // Formato indentado para mayor claridad
+        jsonFile << jsonArray.dump(4);
         jsonFile.close();
         std::cout << "[DEBUG] Archivo JSON generado exitosamente: " << jsonFilename << std::endl;
     } else {
         std::cerr << "[ERROR] No se pudo abrir el archivo JSON para guardar los datos." << std::endl;
     }
 }
+
 
 
 bool MovieDatabase::loadData(const std::string& jsonPath) {
@@ -146,31 +177,54 @@ bool MovieDatabase::loadData(const std::string& jsonPath) {
 
     json data;
     file >> data;
+    file.close();
 
-    for (const auto& movieData : data) {
-        std::string id = cleanString(movieData["id"].get<std::string>());
-        std::string title = cleanString(movieData["title"].get<std::string>());
-        std::string plot = cleanString(movieData["plot"].get<std::string>());
+    // Dividir las películas entre los hilos
+    int numThreads = std::thread::hardware_concurrency();
+    std::vector<std::vector<json>> threadChunks(numThreads);
+    for (size_t i = 0; i < data.size(); ++i) {
+        threadChunks[i % numThreads].push_back(data[i]);
+    }
 
-        std::vector<std::string> tags;
-        for (const auto& tag : movieData["tags"]) {
-            tags.push_back(cleanString(tag.get<std::string>()));
-        }
+    std::mutex moviesMutex;
 
-        auto movie = std::make_shared<Movie>(id, title, plot, tags);
-        movies[id] = movie;
+    // Crear hilos para procesar las películas
+    std::vector<std::thread> threads;
+    for (int t = 0; t < numThreads; ++t) {
+        threads.emplace_back([&, t]() {
+            for (const auto& movieData : threadChunks[t]) {
+                std::string id = cleanString(movieData["id"].get<std::string>());
+                std::string title = cleanString(movieData["title"].get<std::string>());
+                std::string plot = cleanString(movieData["plot"].get<std::string>());
 
-        // Inserta datos en los Tries para búsqueda
-        titleTrie->insert(title, movie);
-        plotTrie->insert(plot, movie);
-        for (const auto& tag : tags) {
-            tagTrie->insert(tag, movie);
-        }
+                std::vector<std::string> tags;
+                for (const auto& tag : movieData["tags"]) {
+                    tags.push_back(cleanString(tag.get<std::string>()));
+                }
+
+                auto movie = std::make_shared<Movie>(id, title, plot, tags);
+
+                // Bloquear acceso a las estructuras compartidas
+                std::lock_guard<std::mutex> lock(moviesMutex);
+                movies[id] = movie;
+                titleTrie->insert(title, movie);
+                plotTrie->insert(plot, movie);
+                for (const auto& tag : tags) {
+                    tagTrie->insert(tag, movie);
+                }
+            }
+        });
+    }
+
+    // Esperar a que todos los hilos terminen
+    for (auto& thread : threads) {
+        thread.join();
     }
 
     std::cout << "[DEBUG] Total de películas cargadas: " << movies.size() << std::endl;
     return true;
 }
+
 
 
 std::shared_ptr<Movie> MovieDatabase::getMovieById(const std::string& id) const {
