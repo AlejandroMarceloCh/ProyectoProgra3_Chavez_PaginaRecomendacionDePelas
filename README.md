@@ -1,10 +1,7 @@
 # Programación III: Proyecto Final (2024-2)
 
 ## Integrantes
-* Nombre y Apellidos
-* Nombre y Apellidos
-* Nombre y Apellidos
-* Nombre y Apellidos
+* Alejandro Marcelo
 
 ---
 
